@@ -1,0 +1,28 @@
+modLoader="javafml" #mandatory
+loaderVersion="[36,)" #mandatory This is typically bumped every Minecraft version by Forge. See our download page for lists of versions.
+license="All rights reserved"
+#issueTrackerURL="https://change.me.to.your.issue.tracker.example.invalid/" #optional
+[[mods]] #mandatory
+modId="weatherplus" #mandatory
+version="${file.jarVersion}" #mandatory
+displayName="WeatherCraft" #mandatory
+# logoFile="examplemod.png" #optional
+credits="The meteorological faculty of the Free University of Berlin for letting my study this beast of a subject" #optional
+authors="MrObsidy24" #optional
+description='''
+
+A mod that adds a realistic weather simulation to the game. It's not entirely realistic, but it should do the trick, generally.
+
+'''
+[[dependencies.weathercraft]] #optional
+    modId="forge" #mandatory
+    mandatory=true #mandatory
+    versionRange="[36,)" #mandatory
+    ordering="NONE"
+    side="BOTH"
+[[dependencies.weathercraft]]
+    modId="minecraft"
+    mandatory=true
+    versionRange="[1.16.5,1.17)"
+    ordering="NONE"
+    side="BOTH"
