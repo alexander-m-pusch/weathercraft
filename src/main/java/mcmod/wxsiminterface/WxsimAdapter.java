@@ -1,11 +1,11 @@
 package mcmod.wxsiminterface;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
-import net.minecraft.world.biome.Biome;
-import net.minecraft.world.gen.Heightmap.Type;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.levelgen.Heightmap;
 import weathersim.base.Grid;
 import weathersim.orography.Orography;
 import weathersim.orography.api.Coordinate;
@@ -14,7 +14,7 @@ public class WxsimAdapter {
 	private static WxsimAdapter INSTANCE;
 	
 	private final Grid grid; //the grid
-	private final World world;
+	private final Level world;
 	private final int resolution;
 	
 	private int radius = 80;
@@ -23,7 +23,7 @@ public class WxsimAdapter {
 	
 	private float temperatureBias = 0.0f; //maybe used later, for seasons. TODO for now
 	
-	private WxsimAdapter(World world, int blocksPerGridEntry) {
+	private WxsimAdapter(Level world, int blocksPerGridEntry) {
 		this.world = world;
 		this.resolution = blocksPerGridEntry;
 		
@@ -73,9 +73,9 @@ public class WxsimAdapter {
 		
 		if(this.world.isClientSide()) throw new IllegalStateException("Somehow, servertick ticked a client world.");
 		
-		((ServerWorld) this.world).setWeatherParameters(Integer.MAX_VALUE, 0, false, false);
+		((ServerLevel) this.world).setWeatherParameters(Integer.MAX_VALUE, 0, false, false);
 		
-		for(PlayerEntity player : this.world.players()) {
+		for(Player player : this.world.players()) {
 			if(!player.isSpectator()) this.loadAround(player.blockPosition()); //we don't want a spectator loading in chunks
 		}
 		
@@ -84,7 +84,7 @@ public class WxsimAdapter {
 	}
 	
 	
-	public static void initialize(World world, int resolution) {
+	public static void initialize(Level world, int resolution) {
 		INSTANCE = new WxsimAdapter(world, resolution);
 	}
 	
@@ -106,14 +106,14 @@ public class WxsimAdapter {
 	}
 	
 	private Biome getBiome(Coordinate coord) {
-		return this.world.getBiome(this.convert(coord));
+		return this.world.getBiome(this.convert(coord)).get();
 	}
 	
 	public float heightCallback(Coordinate coord) {
 		
 		BlockPos pos = this.convert(coord);
 		
-		float height = (float) this.world.getHeightmapPos(Type.WORLD_SURFACE, pos).getY();
+		float height = (float) this.world.getHeightmapPos(Heightmap.Types.WORLD_SURFACE, pos).getY();
 		
 		//clamp for unloaded chunks
 		if(height < 60f) {

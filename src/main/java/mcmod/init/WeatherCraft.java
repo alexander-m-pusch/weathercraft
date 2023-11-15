@@ -5,10 +5,10 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
+import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.minecraftforge.fml.event.server.FMLServerStartedEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
 @Mod(WeatherCraft.MOD_ID)
@@ -27,7 +27,7 @@ public class WeatherCraft {
 	}
 	
 	@SubscribeEvent
-	public void serverStarted(FMLServerStartedEvent event) {
+	public void serverStarted(ServerStartingEvent event) {
 		WxsimAdapter.initialize(event.getServer().overworld(), 50 /* default resolution */);
 	}
 	
@@ -38,7 +38,7 @@ public class WeatherCraft {
 	
 	@SubscribeEvent
 	public void playerJoin(PlayerEvent.PlayerLoggedInEvent event) {
-		WxsimAdapter.getAdapter().loadAround(event.getPlayer().blockPosition());
+		WxsimAdapter.getAdapter().loadAround(event.getEntity().blockPosition());
 	}
 	
 	@SubscribeEvent

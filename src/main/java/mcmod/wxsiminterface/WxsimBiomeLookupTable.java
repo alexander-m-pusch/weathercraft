@@ -1,16 +1,14 @@
 package mcmod.wxsiminterface;
 
-import net.minecraft.world.biome.Biome;
+import net.minecraft.world.level.biome.Biome;
 
 public class WxsimBiomeLookupTable {
 	
 	private static final float STRIDE_FROM_ZERO = 50.0f; //all temps will be between -50 and +50°C
 	
-	public static final ArrayList
-	
 	public static float getTemperatureForBiome(Biome biome, float bias) {
 		
-		float adjustedTemperature = (biome.getBaseTemperature()); 
+		float adjustedTemperature = (biome.getModifiedClimateSettings().temperature()); 
 		
 		return adjustedTemperature * (STRIDE_FROM_ZERO / 2f) + bias;
 	}
@@ -21,7 +19,7 @@ public class WxsimBiomeLookupTable {
 		
 		float maxDew = getTemperatureForBiome(biome, bias);
 		
-		float reallyStupidUnreliableHumidityByBiome = biome.getDownfall(); //seriously, why are mushroom islands more moist than oceans???????
+		float reallyStupidUnreliableHumidityByBiome = biome.getModifiedClimateSettings().downfall(); //seriously, why are mushroom islands more moist than oceans???????
 		
 		return maxDew - ((STRIDE_FROM_ZERO) * (1 - reallyStupidUnreliableHumidityByBiome));
 	}
