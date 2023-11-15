@@ -11,13 +11,13 @@ public class LookupTable {
 	//adjustment coefficient for evaporating water off of the terrain to the lowest level of the atmosphere
 	//formula: dewpoint[sealevel] = dewpoint[sealevel] + coefficient * (Orography.getDewpointAtPosition() - dewpoint[sealevel])
 	public static float getDewpointAdjustmentCoefficient() {
-		return 0.01f;
+		return 0.1f;
 	}
 	
 	//adjustment coefficient for adjusting the temperature of the lowest level of the atmosphere to the terrain heat
 	//formula: temperature[sealevel] = temperature[sealevel] + coefficient * (Orography.getTemperatureAtPosition()- temperature[sealevel])
 	public static float getTemperatureAdjustmentCoefficient() {
-		return 0.01f;
+		return 0.1f;
 	}
 	
 	public static float getDryAdiabaticLapseRate() {

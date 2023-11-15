@@ -10,6 +10,7 @@ import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.ChatType;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.OutgoingChatMessage;
 import net.minecraft.network.chat.PlayerChatMessage;
 import net.minecraft.world.entity.Entity;
@@ -35,7 +36,7 @@ public class WeatherCommand {
 	//convenience method
 	private static void sendMessage(String text) throws CommandSyntaxException {
 		if(context != null) { 
-			context.getSource().getPlayer().sendChatMessage(OutgoingChatMessage.create(PlayerChatMessage.system(text)), true, ChatType.bind(ChatType.CHAT, context.getSource()));
+			context.getSource().getPlayer().sendSystemMessage(Component.literal("[WeatherPlus] " + text), false);
 		}
 	}
 	
@@ -46,10 +47,10 @@ public class WeatherCommand {
 			BlockPos pos = context.getSource().getEntity().blockPosition();
 			Coordinate coord = WxsimAdapter.getAdapter().convert(pos);
 			
-			sendMessage("[WeatherPlus] Terrain at " + pos.getX() + ", " + pos.getZ() + "; grid coordinates: " + coord.getX() + ", " + coord.getY() + ": ");
-			sendMessage("[WeatherPlus] Terrain height: " + WxsimAdapter.getAdapter().heightCallback(coord));
-			sendMessage("[WeatherPlus] Temperature: " + WxsimAdapter.getAdapter().tempCallback(coord));
-			sendMessage("[WeatherPlus] Dewpoint: " + WxsimAdapter.getAdapter().dewpointCallback(coord));
+			sendMessage("Terrain at " + pos.getX() + ", " + pos.getZ() + "; grid coordinates: " + coord.getX() + ", " + coord.getY() + ": ");
+			sendMessage("Terrain height: " + WxsimAdapter.getAdapter().heightCallback(coord));
+			sendMessage("Temperature: " + WxsimAdapter.getAdapter().tempCallback(coord));
+			sendMessage("Dewpoint: " + WxsimAdapter.getAdapter().dewpointCallback(coord));
 			
 		} catch (Exception e) {
 			
@@ -78,28 +79,28 @@ public class WeatherCommand {
 			System.out.println("fired");
 			
 			if(entry == null) {
-				sendMessage("[WeatherPlus] Error: there is no GridEntry at your position. This should not happen, contact the dev with a console log.");
+				sendMessage("Error: there is no GridEntry at your position. Either you are in spectator mode or just created this world. If not, please contact a dev with the console log.");
 				return 1;
 			}
 			
-			sendMessage("[WeatherPlus] GridEntry at " + entry.getX() + ", " + entry.getY() + ", is lazy: " + entry.isLazy());
+			sendMessage("GridEntry at " + entry.getX() + ", " + entry.getY() + ", is lazy: " + entry.isLazy());
 			
-			sendMessage("[WeatherPlus] Temperatures:");
+			sendMessage("Temperatures:");
 			
 			for(int i = 0; i < entry.getTemps().length; i++) {
-				sendMessage("[WeatherPlus] Temperature at level " + i * 1000 + "m : " + entry.getTemp(i));
+				sendMessage("Temperature at level " + i * 1000 + "m : " + entry.getTemp(i));
 			}
 			
-			sendMessage("[WeatherPlus] Dewpoints:");
+			sendMessage("Dewpoints:");
 			
 			for(int i = 0; i < entry.getDews().length; i++) {
-				sendMessage("[WeatherPlus] Dewpoint at level " + i * 1000 + "m : " + entry.getDew(i));
+				sendMessage("Dewpoint at level " + i * 1000 + "m : " + entry.getDew(i));
 			}
 			
 		} catch (Exception e) {
 			System.out.println("Error processing command " + context.getInput());
 			e.printStackTrace();
-			sendMessage("[WeatherPlus] Something went wrong. See console or let the server administrator have a look at it for you.");
+			sendMessage("Something went wrong. See console or let the server administrator have a look at it for you.");
 			return 1;
 		} finally {
 			setContext(null);

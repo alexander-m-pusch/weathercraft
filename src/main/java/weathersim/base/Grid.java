@@ -1,16 +1,25 @@
 package weathersim.base;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import weathersim.math.ScalarField;
+import weathersim.math.VectorField;
 import weathersim.orography.Orography;
 import weathersim.orography.api.Coordinate;
+import weathersim.util.Constants;
 import weathersim.util.LookupTable;
 
 public class Grid {
+	
+	// Prognostic fields used
+	private final ScalarField T = new ScalarField();
+	private final ScalarField rho = new ScalarField();
+	//private final ScalarField q = new ScalarField();
+	private final ScalarField Tdew = new ScalarField();
+	
+	private final VectorField v = new VectorField();
 	
 	private final Orography OROGRAPHY;
 	private ConcurrentHashMap<Integer, ConcurrentHashMap<Integer, GridEntry>> CELLS = new ConcurrentHashMap<Integer, ConcurrentHashMap<Integer, GridEntry>>();

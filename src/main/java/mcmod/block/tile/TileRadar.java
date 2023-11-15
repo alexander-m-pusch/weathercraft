@@ -11,5 +11,5 @@ public class TileRadar extends BlockEntity {
 		super(p_155228_, p_155229_, p_155230_);
 	}
 
-	private int tickCounter = 0;
+	//private int tickCounter = 0;
 }
