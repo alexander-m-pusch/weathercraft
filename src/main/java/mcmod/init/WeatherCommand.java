@@ -9,12 +9,9 @@ import mcmod.wxsiminterface.WxsimAdapter;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.chat.ChatType;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.OutgoingChatMessage;
-import net.minecraft.network.chat.PlayerChatMessage;
 import net.minecraft.world.entity.Entity;
-import weathersim.base.GridEntry;
+import weathersim.grid.GridEntry;
 import weathersim.orography.api.Coordinate;
 
 public class WeatherCommand {
@@ -40,8 +37,7 @@ public class WeatherCommand {
 		}
 	}
 	
-	private static int getTerrainStats(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
-		
+	private static int getTerrainStats(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {	
 		try {
 			setContext(context);
 			BlockPos pos = context.getSource().getEntity().blockPosition();
@@ -58,8 +54,6 @@ public class WeatherCommand {
 			setContext(null);
 		}
 		
-
-		
 		return 1;
 	}
 	
@@ -74,27 +68,26 @@ public class WeatherCommand {
 		try {
 			Coordinate coords = WxsimAdapter.getAdapter().convert(entity.blockPosition());
 			
-			GridEntry entry = WxsimAdapter.getAdapter().instance().getGridCell(coords.getX(), coords.getY(), true);
+			float[] temps = WxsimAdapter.getAdapter().instance().getTemps(coords.getX(), coords.getY(), true);
+			float[] dews = WxsimAdapter.getAdapter().instance().getDews(coords.getX(), coords.getY(), true);
+			boolean lazy = WxsimAdapter.getAdapter().instance().getLazy(coords.getX(), coords.getY(), true);
 			
-			System.out.println("fired");
-			
-			if(entry == null) {
-				sendMessage("Error: there is no GridEntry at your position. Either you are in spectator mode or just created this world. If not, please contact a dev with the console log.");
-				return 1;
-			}
-			
-			sendMessage("GridEntry at " + entry.getX() + ", " + entry.getY() + ", is lazy: " + entry.isLazy());
+			sendMessage("GridEntry at " + coords.getX() + ", " + coords.getY() + ", is active: " + lazy);
 			
 			sendMessage("Temperatures:");
 			
-			for(int i = 0; i < entry.getTemps().length; i++) {
-				sendMessage("Temperature at level " + i * 1000 + "m : " + entry.getTemp(i));
+			int i = 0;
+			for(float temp : temps) {
+				sendMessage("Temperature at level " + i * 1000 + "m : " + temp);
+				i++;
 			}
 			
 			sendMessage("Dewpoints:");
 			
-			for(int i = 0; i < entry.getDews().length; i++) {
-				sendMessage("Dewpoint at level " + i * 1000 + "m : " + entry.getDew(i));
+			i = 0;
+			for(float dew : dews) {
+				sendMessage("Temperature at level " + i * 1000 + "m : " + dew);
+				i++;
 			}
 			
 		} catch (Exception e) {

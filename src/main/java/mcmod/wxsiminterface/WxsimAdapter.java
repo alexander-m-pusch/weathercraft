@@ -6,16 +6,16 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.levelgen.Heightmap;
-import weathersim.base.Grid;
+import weathersim.grid.Grid;
 import weathersim.orography.Orography;
 import weathersim.orography.api.Coordinate;
+import weathersim.util.Constants;
 
 public class WxsimAdapter {
 	private static WxsimAdapter INSTANCE;
 	
 	private final Grid grid; //the grid
 	private final Level world;
-	private final int resolution;
 	
 	private int radius = 80;
 	
@@ -23,36 +23,17 @@ public class WxsimAdapter {
 	
 	private float temperatureBias = 0.0f; //maybe used later, for seasons. TODO for now
 	
-	private WxsimAdapter(Level world, int blocksPerGridEntry) {
+	private WxsimAdapter(Level world) {
 		this.world = world;
-		this.resolution = blocksPerGridEntry;
 		
 		Orography orography = new Orography(this::tempCallback, this::dewpointCallback, this::heightCallback);
 		
 		this.grid = new Grid(orography);
 	}
-	
-	public float[] getDewsAtPosition(BlockPos pos) {
-		Coordinate cPos = this.convert(pos);
-		
-		int x = cPos.getX();
-		int z = cPos.getY();
-		
-		return this.grid.getGridCell(x, z, false).getTemps();
-	}
-	
-	public float[] getTempsAtPosition(BlockPos pos) {
-		Coordinate cPos = this.convert(pos);
-		
-		int x = cPos.getX();
-		int z = cPos.getY();
-		
-		return this.grid.getGridCell(x, z, false).getDews();
-	}
-	
+
 	public void loadAround(BlockPos pos) {
-		int x = (pos.getX() / resolution) - radius;
-		int z = (pos.getZ() / resolution) - radius;
+		int x = (pos.getX() / Constants.GRIDSIZE) - radius;
+		int z = (pos.getZ() / Constants.GRIDSIZE) - radius;
 		
 		for(int i = x; i < x + 2 * radius; i++) {
 			for(int j = z; j < z + 2 * radius; j++) {
@@ -66,7 +47,7 @@ public class WxsimAdapter {
 	}
 	
 	public void tick() {
-		if(tickCounter <= 100) {
+		if(tickCounter <= Constants.TIME_DIFF * 20) {
 			tickCounter++;
 			return;
 		}
@@ -84,8 +65,8 @@ public class WxsimAdapter {
 	}
 	
 	
-	public static void initialize(Level world, int resolution) {
-		INSTANCE = new WxsimAdapter(world, resolution);
+	public static void initialize(Level world) {
+		INSTANCE = new WxsimAdapter(world);
 	}
 	
 	public static WxsimAdapter getAdapter() {
@@ -98,11 +79,11 @@ public class WxsimAdapter {
 	
 	//convenience method
 	public BlockPos convert(Coordinate coord) {
-		return new BlockPos(coord.getX() * this.resolution, 64, coord.getY() * this.resolution);
+		return new BlockPos(coord.getX() * Constants.GRIDSIZE, 64, coord.getY() * Constants.GRIDSIZE);
 	}
 	
 	public Coordinate convert(BlockPos pos) {
-		return new Coordinate(pos.getX() / this.resolution, pos.getZ() / this.resolution);
+		return new Coordinate(pos.getX() / Constants.GRIDSIZE, pos.getZ() / Constants.GRIDSIZE);
 	}
 	
 	private Biome getBiome(Coordinate coord) {

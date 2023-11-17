@@ -28,7 +28,7 @@ public class WeatherCraft {
 	
 	@SubscribeEvent
 	public void serverStarted(ServerStartingEvent event) {
-		WxsimAdapter.initialize(event.getServer().overworld(), 50 /* default resolution */);
+		WxsimAdapter.initialize(event.getServer().overworld());
 	}
 	
 	@SubscribeEvent

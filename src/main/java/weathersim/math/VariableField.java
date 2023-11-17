@@ -1,6 +1,7 @@
 package weathersim.math;
 
-import java.util.HashMap;
+
+import java.util.concurrent.ConcurrentHashMap;
 
 import weathersim.util.Constants;
 
@@ -8,7 +9,7 @@ public abstract class VariableField<Type, GradientType> {
 	protected final int d;
 	protected final int dvert;
 	
-	private final HashMap<Integer, HashMap<Integer, HashMap<Integer, Type>>> values = new HashMap<Integer, HashMap<Integer, HashMap<Integer, Type>>>();
+	private final ConcurrentHashMap<Integer, ConcurrentHashMap<Integer, ConcurrentHashMap<Integer, Type>>> values = new ConcurrentHashMap<Integer, ConcurrentHashMap<Integer, ConcurrentHashMap<Integer, Type>>>();
 	
 	public VariableField(int distanceBetweenPoints, int distanceBetweenPointsVertical) {
 		this.d = distanceBetweenPoints;
@@ -18,14 +19,13 @@ public abstract class VariableField<Type, GradientType> {
 	public VariableField() {
 		this(Constants.GRIDSIZE, Constants.GRIDSIZE_VERTICAL);
 	}
-
 	
 	public void put(int x, int y, int z, Type f) {
 		if(!values.containsKey(x)) {
-			values.put(x, new HashMap<Integer, HashMap<Integer, Type>>());
+			values.put(x, new ConcurrentHashMap<Integer, ConcurrentHashMap<Integer, Type>>());
 		}
 		if(!values.get(x).containsKey(y)) {
-			values.get(x).put(y, new HashMap<Integer, Type>());
+			values.get(x).put(y, new ConcurrentHashMap<Integer, Type>());
 		}
 		
 		values.get(x).get(y).put(z, f);
@@ -33,10 +33,10 @@ public abstract class VariableField<Type, GradientType> {
 	
 	public Type getRaw(int x, int y, int z) {
 		if(!values.containsKey(x)) {
-			values.put(x, new HashMap<Integer, HashMap<Integer, Type>>());
+			values.put(x, new ConcurrentHashMap<Integer, ConcurrentHashMap<Integer, Type>>());
 		}
 		if(!values.get(x).containsKey(y)) {
-			values.get(x).put(y, new HashMap<Integer, Type>());
+			values.get(x).put(y, new ConcurrentHashMap<Integer, Type>());
 		}
 		
 		return values.get(x).get(y).get(z);

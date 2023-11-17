@@ -1,20 +1,11 @@
 package weathersim.math;
 
 public class VectorField extends VariableField<Vector, Tensor> {
-	
-	public VectorField(int d, int dvert) {
-		super(d, dvert);
-	}
-	
-	public VectorField() {
-		super();
-	}
-	
 	@Override
 	public Vector get(int x, int y, int z) {
 		Vector vraw = this.getRaw(x, y, z);
 		
-		if(vraw == null) vraw = new Vector(0f, 0f, 0f);
+		if(vraw == null) vraw = new Vector(-1000f, -1000f, -1000f);
 		
 		return null;
 	}
@@ -51,6 +42,13 @@ public class VectorField extends VariableField<Vector, Tensor> {
 		Vector minusX = this.get(x - 1, y, z);
 		Vector minusY = this.get(x, y - 1, z);
 		Vector minusZ = this.get(x, y, z - 1);
+		
+		if(plusX.getX() < -500f) plusX = this.get(x, y, z);
+		if(minusX.getX() < -500f) minusX = this.get(x, y, z);
+		if(plusY.getX() < -500f) plusY = this.get(x, y, z);
+		if(minusY.getX() < -500f) minusY = this.get(x, y, z);
+		if(plusZ.getX() < -500f) plusZ = this.get(x, y, z);
+		if(minusZ.getX() < -500f) minusZ = this.get(x, y, z);
 		
 		return new Tensor(this.gradX(plusX, minusX), this.gradY(plusY, minusY), this.gradZ(plusZ, minusZ));
 	}

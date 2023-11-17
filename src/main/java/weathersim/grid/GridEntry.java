@@ -1,4 +1,4 @@
-package weathersim.base;
+package weathersim.grid;
 
 import weathersim.util.LookupTable;
 
@@ -11,9 +11,10 @@ public class GridEntry {
 	private final Grid grid;
 	
 	private float[] temp;
-	private float[] dew;
+	public float[] dew; //public for manipulating the dews after the fact
 	
 	private boolean isLazy;
+	public boolean performedConvection;
 	
 	private float[][] surrTemp;
 	private float[][] surrDew;
@@ -171,12 +172,16 @@ public class GridEntry {
 				
 				if(moistConvection) {
 					adjustedTemperature = prev - LookupTable.getMoistAdiabaticLapseRate();
+					this.performedConvection = true;
+					System.out.println("DING DING DING!!! MOIST CONVETION!!! " + this.x + ", " + this.y + ", " + index);
 				} else {
 					adjustedTemperature = prev - LookupTable.getDryAdiabaticLapseRate();
 				}
 				
 				if(adjustedTemperature > temperature) {
 					newTemps[index] = adjustedTemperature; //we performed convection
+					this.performedConvection = true;
+					System.out.println("DING DING DING!!! DRY CONVETION!!! " + this.x + ", " + this.y + ", " + index);
 					newTemps[index - 1] = moistConvection ? temperature + LookupTable.getMoistAdiabaticLapseRate() : LookupTable.getDryAdiabaticLapseRate();
 					//we need to swap the temps too, that's how displacement works
 				} else {
