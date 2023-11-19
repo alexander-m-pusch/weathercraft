@@ -23,4 +23,20 @@ public class VectorInt {
 		return z;
 	}
 
+	@Override
+	public String toString() {
+		return "(" + this.getX() + ", " + this.getY() + ", " + this.getZ() + ")";
+	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		boolean isEqual = false;
+		
+		if(obj instanceof VectorInt) {
+			VectorInt vec = (VectorInt) obj;
+			isEqual = (vec.getX() == this.getX()) && (vec.getY() == this.getY()) && (vec.getZ() == this.getZ());
+		}
+		
+		return isEqual;
+	}
 }

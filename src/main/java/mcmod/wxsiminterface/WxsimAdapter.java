@@ -17,8 +17,7 @@ public class WxsimAdapter {
 	private final Grid grid; //the grid
 	private final Level world;
 	
-	private int radius = 80;
-	
+	private int radius = 20;
 	private int tickCounter = 0;
 	
 	private float temperatureBias = 0.0f; //maybe used later, for seasons. TODO for now
@@ -43,7 +42,7 @@ public class WxsimAdapter {
 	}
 	
 	public void setLoadRadius(int radius) {
-		this.radius = radius;
+		this.radius = (radius * 16) / Constants.GRIDSIZE;
 	}
 	
 	public void tick() {
@@ -61,7 +60,7 @@ public class WxsimAdapter {
 		}
 		
 		tickCounter = 0; //run only every 5 secs or so, idk
-		this.grid.tick(); //this is a beast of a computation, I'll probably have to make this multithreaded, too
+		this.grid.tick(); 
 	}
 	
 	

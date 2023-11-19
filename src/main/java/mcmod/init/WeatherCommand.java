@@ -11,8 +11,8 @@ import net.minecraft.commands.Commands;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.Entity;
-import weathersim.grid.GridEntry;
 import weathersim.orography.api.Coordinate;
+import weathersim.util.Constants;
 
 public class WeatherCommand {
 	public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
@@ -68,8 +68,14 @@ public class WeatherCommand {
 		try {
 			Coordinate coords = WxsimAdapter.getAdapter().convert(entity.blockPosition());
 			
-			float[] temps = WxsimAdapter.getAdapter().instance().getTemps(coords.getX(), coords.getY(), true);
-			float[] dews = WxsimAdapter.getAdapter().instance().getDews(coords.getX(), coords.getY(), true);
+			float[] temps = new float[Constants.GRIDSIZE_LAYERS];
+			float[] dews = new float[Constants.GRIDSIZE_LAYERS];
+			
+			for(int i = 0; i < Constants.GRIDSIZE_LAYERS; i++) {
+				temps[i] = WxsimAdapter.getAdapter().instance().getTemps(coords.getX(), coords.getY(), i, true);
+				dews[i] = WxsimAdapter.getAdapter().instance().getDews(coords.getX(), coords.getY(), i, true);
+			}
+				
 			boolean lazy = WxsimAdapter.getAdapter().instance().getLazy(coords.getX(), coords.getY(), true);
 			
 			sendMessage("GridEntry at " + coords.getX() + ", " + coords.getY() + ", is active: " + lazy);

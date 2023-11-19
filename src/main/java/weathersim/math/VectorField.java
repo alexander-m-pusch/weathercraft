@@ -7,7 +7,7 @@ public class VectorField extends VariableField<Vector, Tensor> {
 		
 		if(vraw == null) vraw = new Vector(-1000f, -1000f, -1000f);
 		
-		return null;
+		return vraw;
 	}
 	
 	public Vector gradX(Vector plus, Vector minus) {

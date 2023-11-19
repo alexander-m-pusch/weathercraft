@@ -3,6 +3,10 @@ package weathersim.math;
 public class Vector {
 	private float u, v, w;
 	
+	public static final Vector I = new Vector(1.0f, 0.0f, 0.0f);
+	public static final Vector J = new Vector(0.0f, 1.0f, 0.0f);
+	public static final Vector K = new Vector(0.0f, 0.0f, 1.0f);
+	
 	public Vector(float u, float v, float w) {
 		this.u = u;
 		this.v = v;
@@ -21,6 +25,13 @@ public class Vector {
 		return w;
 	}
 
+	public Vector norm() {
+		this.u = this.u / this.getLength();
+		this.v = this.v / this.getLength();
+		this.w = this.w / this.getLength();
+		return this;
+	}
+	
 	public float getLength() {
 		return (float) Math.sqrt(((double) u*u + v*v + w*w));
 	}
@@ -65,5 +76,10 @@ public class Vector {
 	
 	public Vector dup() {
 		return new Vector(this.u, this.v, this.w);
+	}
+	
+	@Override
+	public String toString() {
+		return "(" + this.getX() + ", " + this.getY() + ", " + this.getZ() + ")";
 	}
 }

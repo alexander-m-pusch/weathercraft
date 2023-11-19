@@ -20,24 +20,17 @@ public class LookupTable {
 		return 0.1f;
 	}
 	
-	public static float getDryAdiabaticLapseRate() {
-		return 9.8f; //	9.8K/km
+	/**
+	 * Gets the default temperature which the simulator places on new gridcells
+	 * 
+	 * @param i
+	 * @return
+	 */
+	public static float getDefaultTemperature(int i) {
+		return Constants.SURFACE_TEMPERATURE_DEFAULT - (Constants.GRADIENT_TEMPERATURE_DEFAULT * i * Constants.GRIDSIZE_VERTICAL);
 	}
 	
-	public static float getMoistAdiabaticLapseRate() {
-		return 6.5f; //	I am aware that the MALR changes with height, but for the point of this sim it
-					 // should be enough since I want to keep the calculation efforts minimal.
-	}
-	
-	public static float[] getDefaultTemperature() {
-		
-		return new float[] {15f, 8.5f, 2f, -4.5f, -11f, -17.5f, -24f, -30f, -37f, -43.5f, -50f};
-		
-	}
-	
-	public static float[] getDefaultDewpoint() {
-		
-		return new float[] {-100f, -100f, -100f, -100f, -100f, -100f, -100f, -100f, -100f, -100f, -100f};
-		
+	public static float getDefaultDewpoint(int i) {
+		return Constants.SURFACE_DEWPOINT_DEFAULT - (Constants.GRADIENT_DEWPOINT_DEFAULT * i * Constants.GRIDSIZE_VERTICAL);		
 	}
 }

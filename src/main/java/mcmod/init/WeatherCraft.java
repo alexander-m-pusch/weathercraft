@@ -23,12 +23,15 @@ public class WeatherCraft {
 	}
 	
 	public void commonSetup(FMLCommonSetupEvent event) {
-		System.out.println("Fired!");
+		System.out.println("[WeatherPlus] Common setup for WeatherPlus.");
 	}
 	
 	@SubscribeEvent
 	public void serverStarted(ServerStartingEvent event) {
+		System.out.println("[WeatherPlus] Weather system starting.");
 		WxsimAdapter.initialize(event.getServer().overworld());
+		System.out.println("[WeatherPlus] Setting load radius.");
+		WxsimAdapter.getAdapter().setLoadRadius(event.getServer().getSpawnRadius(event.getServer().overworld()));
 	}
 	
 	@SubscribeEvent
@@ -38,7 +41,14 @@ public class WeatherCraft {
 	
 	@SubscribeEvent
 	public void playerJoin(PlayerEvent.PlayerLoggedInEvent event) {
+		System.out.println("[WeatherPlus] Weather system handling of login of player \"" + event.getEntity().getName().getString() + "\"");
+		System.out.println("[WeatherPlus] Loading around player.");
 		WxsimAdapter.getAdapter().loadAround(event.getEntity().blockPosition());
+	}
+	
+	@SubscribeEvent
+	public void playerLeave(PlayerEvent.PlayerLoggedOutEvent event) {
+		System.out.println("[WeatherPlus] Weather system handling of logout of player \"" + event.getEntity().getName().getString() + "\"");
 	}
 	
 	@SubscribeEvent
